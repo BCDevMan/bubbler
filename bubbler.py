@@ -2,11 +2,11 @@
 
 from gimpfu import *
 
-def bubbler(image, drawable, thickness):
+def bubbler(image, drawable, thickness, offset_x, offset_y, blur, shadow_color, opacity):
 	new_layer = create_layer(image)
 	draw_bubble(image, new_layer, thickness)
 	pdb.gimp_selection_none(image)
-	pdb.script_fu_drop_shadow(image, new_layer, 8, 8, 10, (0, 0, 0), 50, 1)
+	pdb.script_fu_drop_shadow(image, new_layer, offset_x, offset_y, blur, shadow_color, opacity, 1)
 	pdb.gimp_image_merge_down(image, new_layer, 1)
 #	new_layer = pdb.gimp_image_get_active_layer(image)
 	new_layer = pdb.gimp_image_get_layer_by_name(image, 'Drop Shadow')
@@ -41,6 +41,8 @@ def create_layer(image):
 	pdb.gimp_image_lower_item(image, bubble_layer)
 	return bubble_layer
 	
+defaultColor=gimpcolor.RGB(0.,0.,0.)
+
 register(
 	"Bubbler",
 	"Create Speech Bubbles",
@@ -52,6 +54,11 @@ register(
 	"*",
 	[
 		(PF_INT, "thickness", "Thickness", 3),
+		(PF_INT, "offset_x", "Offset X", 8),
+		(PF_INT, "offset_y", "Offset Y", 8),
+		(PF_INT, "blur", "Blur Radius", 10),
+		(PF_COLOUR , "shadow_color", "Color", defaultColor),
+		(PF_INT, "opacity", "Opacity", 50)
 	],
 	[],
 	bubbler)
